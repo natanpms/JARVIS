@@ -1,13 +1,15 @@
 import colors from "@/constants/colors";
+import { createUser, loginUser } from "@/src/app/services/auth";
+import { showError, showSuccess } from "@/src/app/services/toast";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import styles from "../../../styles/authForm/style";
-import { FocusedInput } from "../../../types/form";
+import { FocusedInput, formUser } from "../../../types/form";
 import FormInput from "../../FormInput";
 
 type AuthCardProps = {
@@ -23,10 +25,36 @@ export default function AuthCard({ isLogin = false }: AuthCardProps) {
     },
   });
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [focusedInput, setFocusedInput] = useState<FocusedInput>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  function onSubmit(data: any) {}
+  async function onSubmit(user: formUser): Promise<void> {
+    try {
+      setLoading(true);
+
+      const { error, data } = isLogin
+        ? await loginUser(user)
+        : await createUser(user);
+
+      if (error) {
+        showError(error.message);
+        return;
+      }
+
+      showSuccess(
+        isLogin
+          ? "Login realizado com sucesso!"
+          : "Cadastro concluído com sucesso!"
+      );
+
+      !isLogin ? router.replace("/") : "";
+    } catch (err) {
+      showError("Erro inesperado, tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <View style={styles.card}>
@@ -107,7 +135,15 @@ export default function AuthCard({ isLogin = false }: AuthCardProps) {
       </Link>
 
       <Pressable style={styles.button} onPress={handleSubmit(onSubmit)}>
-        <Text style={styles.buttonText}>Entrar</Text>
+        <Text style={styles.buttonText}>
+          {loading ? (
+            <ActivityIndicator size="large" color="#ffffff" />
+          ) : isLogin ? (
+            "Entrar"
+          ) : (
+            "Cadastrar"
+          )}
+        </Text>
       </Pressable>
 
       {isLogin ? (
