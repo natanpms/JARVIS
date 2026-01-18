@@ -1,9 +1,9 @@
+import AuthCard from "@/src/components/Auth/AuthCard";
+import AuthHead from "@/src/components/Auth/AuthHead";
+import AuthWarning from "@/src/components/Auth/AuthWarning";
+import styles from "@/src/styles/authForm/style";
 import React from "react";
 import { View } from "react-native";
-import AuthCard from "../../components/Auth/AuthCard";
-import AuthHead from "../../components/Auth/AuthHead";
-import AuthWarning from "../../components/Auth/AuthWarning";
-import styles from "../../styles/authForm/style";
 
 export default function Signup() {
   return (

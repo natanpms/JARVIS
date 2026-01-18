@@ -1,4 +1,3 @@
-// toast.ts
 import Toast from "react-native-toast-message";
 
 export function showError(msg: string) {

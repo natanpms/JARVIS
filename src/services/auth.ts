@@ -3,7 +3,14 @@ import { AuthResponse } from "@supabase/supabase-js";
 import { formUser } from "../types/form";
 
 export async function createUser(data: formUser): Promise<AuthResponse> {
-  return supabase.auth.signUp(data);
+  return supabase.auth.signUp({
+    ...data,
+    options: {
+      data: {
+        name: data?.name,
+      },
+    },
+  });
 }
 
 export async function loginUser(data: formUser): Promise<AuthResponse> {
@@ -11,4 +18,8 @@ export async function loginUser(data: formUser): Promise<AuthResponse> {
     email: data.email,
     password: data.password,
   });
+}
+
+export async function logoutUser(): Promise<{ error: Error | null }> {
+  return supabase.auth.signOut();
 }

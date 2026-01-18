@@ -1,4 +1,4 @@
-import styles from "@/src/app/styles/authForm/style";
+import styles from "@/src/styles/authForm/style";
 import { Text } from "react-native";
 
 export default function AuthWarning() {

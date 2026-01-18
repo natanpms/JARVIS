@@ -1,6 +1,7 @@
 import colors from "@/constants/colors";
-import { createUser, loginUser } from "@/src/app/services/auth";
-import { showError, showSuccess } from "@/src/app/services/toast";
+
+import { createUser, loginUser } from "@/src/services/auth";
+import { showError, showSuccess } from "@/src/services/toast";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -30,6 +31,7 @@ export default function AuthCard({ isLogin = false }: AuthCardProps) {
   const [loading, setLoading] = useState<boolean>(false);
 
   async function onSubmit(user: formUser): Promise<void> {
+    if (loading) return;
     try {
       setLoading(true);
 
@@ -45,10 +47,12 @@ export default function AuthCard({ isLogin = false }: AuthCardProps) {
       showSuccess(
         isLogin
           ? "Login realizado com sucesso!"
-          : "Cadastro concluído com sucesso!"
+          : "Cadastro concluído com sucesso!",
       );
 
-      !isLogin ? router.replace("/") : "";
+      !isLogin
+        ? router.replace("/")
+        : router.replace("/(assistance)/home/page");
     } catch (err) {
       showError("Erro inesperado, tente novamente.");
     } finally {
@@ -134,16 +138,18 @@ export default function AuthCard({ isLogin = false }: AuthCardProps) {
         Esqueceu sua senha?
       </Link>
 
-      <Pressable style={styles.button} onPress={handleSubmit(onSubmit)}>
-        <Text style={styles.buttonText}>
-          {loading ? (
-            <ActivityIndicator size="large" color="#ffffff" />
-          ) : isLogin ? (
-            "Entrar"
-          ) : (
-            "Cadastrar"
-          )}
-        </Text>
+      <Pressable
+        style={styles.button}
+        onPress={handleSubmit(onSubmit)}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator size="small" color="#ffffff" />
+        ) : (
+          <Text style={styles.buttonText}>
+            {isLogin ? "Entrar" : "Cadastrar"}
+          </Text>
+        )}
       </Pressable>
 
       {isLogin ? (
